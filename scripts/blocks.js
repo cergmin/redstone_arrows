@@ -68,15 +68,15 @@ class Block {
 	}
 
 	add_redstone_source(x, y) {
-		this.redstone_sources[x, y] = true;
+		this.redstone_sources[[x, y]] = true;
 	}
 
 	remove_redstone_source(x, y) {
-		this.redstone_sources[x, y] = false;
+		this.redstone_sources[[x, y]] = false;
 	}
 
 	click() {
-		return [];
+		return;
 	}
 }
 
@@ -147,7 +147,7 @@ class RedstoneSource extends Block {
 		area.refresh_cell(this.x, this.y - 1);
 	}
 
-	click(){
+	click() {
 		this.is_active = !this.is_active;
 		return this.refresh_state();
 	}
@@ -187,24 +187,24 @@ class SimpleArrow extends Block {
 		this.draw();
 
 		let sides = [
-			[this.x, this.y - 1], 
-			[this.x + 1, this.y], 
-			[this.x, this.y + 1], 
+			[this.x, this.y - 1],
+			[this.x + 1, this.y],
+			[this.x, this.y + 1],
 			[this.x - 1, this.y]
 		];
 
 		if (this.is_active) {
-			for(let i = 0; i < 4; i++){
-				if(i + 1 == this.direction){
+			for (let i = 0; i < 4; i++) {
+				if (i + 1 == this.direction) {
 					area.get_cell(sides[i][0], sides[i][1]).add_redstone_source(this.x, this.y);
 				}
-				else{
+				else {
 					area.get_cell(sides[i][0], sides[i][1]).remove_redstone_source(this.x, this.y);
 				}
 			}
 		}
 		else {
-			for(let i = 0; i < 4; i++){
+			for (let i = 0; i < 4; i++) {
 				area.get_cell(sides[i][0], sides[i][1]).remove_redstone_source(this.x, this.y);
 			}
 		}
@@ -221,17 +221,12 @@ class SimpleArrow extends Block {
 		else if (this.direction == 4) {
 			area.refresh_cell(this.x - 1, this.y);
 		}
-
-		// area.refresh_cell(this.x + 1, this.y);
-		// area.refresh_cell(this.x, this.y + 1);
-		// area.refresh_cell(this.x - 1, this.y);
-		// area.refresh_cell(this.x, this.y - 1);
 	}
 
 	click() {
 		this.direction++;
 
-		if(this.direction > 4){
+		if (this.direction > 4) {
 			this.direction = 1;
 		}
 
@@ -277,24 +272,24 @@ class DoubleArrow extends Block {
 		this.draw();
 
 		let sides = [
-			[this.x, this.y - 2], 
-			[this.x + 2, this.y], 
-			[this.x, this.y + 2], 
+			[this.x, this.y - 2],
+			[this.x + 2, this.y],
+			[this.x, this.y + 2],
 			[this.x - 2, this.y]
 		];
 
 		if (this.is_active) {
-			for(let i = 0; i < 4; i++){
-				if(i + 1 == this.direction){
+			for (let i = 0; i < 4; i++) {
+				if (i + 1 == this.direction) {
 					area.get_cell(sides[i][0], sides[i][1]).add_redstone_source(this.x, this.y);
 				}
-				else{
+				else {
 					area.get_cell(sides[i][0], sides[i][1]).remove_redstone_source(this.x, this.y);
 				}
 			}
 		}
 		else {
-			for(let i = 0; i < 4; i++){
+			for (let i = 0; i < 4; i++) {
 				area.get_cell(sides[i][0], sides[i][1]).remove_redstone_source(this.x, this.y);
 			}
 		}
@@ -316,7 +311,7 @@ class DoubleArrow extends Block {
 	click() {
 		this.direction++;
 
-		if(this.direction > 4){
+		if (this.direction > 4) {
 			this.direction = 1;
 		}
 
@@ -362,24 +357,24 @@ class PullArrow extends Block {
 		this.draw();
 
 		let sides = [
-			[this.x, this.y - 1], 
-			[this.x + 1, this.y], 
-			[this.x, this.y + 1], 
+			[this.x, this.y - 1],
+			[this.x + 1, this.y],
+			[this.x, this.y + 1],
 			[this.x - 1, this.y]
 		];
 
 		if (this.is_active) {
-			for(let i = 0; i < 4; i++){
-				if(i + 1 == this.direction){
+			for (let i = 0; i < 4; i++) {
+				if (i + 1 == this.direction) {
 					area.get_cell(sides[i][0], sides[i][1]).add_redstone_source(this.x, this.y);
 				}
-				else{
+				else {
 					area.get_cell(sides[i][0], sides[i][1]).remove_redstone_source(this.x, this.y);
 				}
 			}
 		}
 		else {
-			for(let i = 0; i < 4; i++){
+			for (let i = 0; i < 4; i++) {
 				area.get_cell(sides[i][0], sides[i][1]).remove_redstone_source(this.x, this.y);
 			}
 		}
@@ -401,7 +396,7 @@ class PullArrow extends Block {
 	click() {
 		this.direction++;
 
-		if(this.direction > 4){
+		if (this.direction > 4) {
 			this.direction = 1;
 		}
 
