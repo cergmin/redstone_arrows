@@ -9,7 +9,7 @@ class Area {
 
 		this.refresh_interval = setInterval(
 			function() {
-				console.log(self.refresh_list.length + '( ' + self.refresh_list.filter(onlyUnique2D).length + ' )');
+				// console.log(self.refresh_list.length + '( ' + self.refresh_list.filter(onlyUnique2D).length + ' )');
 				// if(self.refresh_list.length > 2000){
 				// 	self.refresh_list = [];
 				// }
@@ -39,6 +39,9 @@ class Area {
 		}
 		else if (type == 'pull_arrow') {
 			this.area[[x, y]] = new PullArrow(x, y);
+		}
+		else if (type == 'info') {
+			console.log(this.area[[x, y]]);
 		}
 	};
 
