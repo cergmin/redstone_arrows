@@ -365,7 +365,7 @@ class PullArrow extends Block {
 		this.is_active = area.get_cell(
 			sides[this.direction - 1][0], 
 			sides[this.direction - 1][1]
-		).is_active;
+		).is_active || (this.number_of_redstone_sources > 0 ? true : false);
 
 		this.draw();
 
