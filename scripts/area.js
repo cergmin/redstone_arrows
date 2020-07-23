@@ -40,6 +40,9 @@ class Area {
 		else if (type == 'pull_arrow') {
 			this.area[[x, y]] = new PullArrow(x, y);
 		}
+		else if (type == 'logical_and') {
+			this.area[[x, y]] = new LogicalAnd(x, y);
+		}
 		else if (type == 'info') {
 			console.log(this.area[[x, y]]);
 		}
