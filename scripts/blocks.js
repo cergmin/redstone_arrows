@@ -3,6 +3,7 @@ class Block {
 		this.x = x;
 		this.y = y;
 		this.is_active = false;
+		this.domino_refresh = false;
 		this.redstone_sources = {};
 
 		this.name = name;
@@ -333,6 +334,8 @@ class PullArrow extends Block {
 			'./images/pull_arrow_white.png',
 			'hsla(0, 100%, 40%, 1)');
 		this.direction = 1;
+
+		this.domino_refresh = true;
 	}
 
 	get styles() {
@@ -352,11 +355,21 @@ class PullArrow extends Block {
 	}
 
 	refresh_state() {
-		this.is_active = (this.number_of_redstone_sources > 0 ? true : false);
+		let sides = [
+			[this.x, this.y + 1],
+			[this.x - 1, this.y],
+			[this.x, this.y - 1],
+			[this.x + 1, this.y]
+		];
+		
+		this.is_active = area.get_cell(
+			sides[this.direction - 1][0], 
+			sides[this.direction - 1][1]
+		).is_active;
 
 		this.draw();
 
-		let sides = [
+		sides = [
 			[this.x, this.y - 1],
 			[this.x + 1, this.y],
 			[this.x, this.y + 1],

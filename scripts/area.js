@@ -4,6 +4,7 @@ class Area {
 		this.selector = selector;
 		this.refresh_list = [];
 		this.new_refresh_list = [];
+		this.domino_refresh_links = [];
 
 		var self = this;
 
@@ -25,6 +26,12 @@ class Area {
 
 	refresh_cell(x, y) {
 		this.new_refresh_list.push([x, y]);
+
+		if(this.domino_refresh_links[[x, y]] !== undefined){
+			for(let i = 0; i < this.domino_refresh_links[[x, y]].length; i++){
+				this.new_refresh_list.push(this.domino_refresh_links[[x, y]][i]);
+			}
+		}
 	}
 
 	set_cell(x, y, type) {
@@ -45,6 +52,23 @@ class Area {
 		}
 		else if (type == 'info') {
 			console.log(this.area[[x, y]]);
+		}
+
+		if(this.area[[x, y]].domino_refresh){
+			let sides = [
+				[x, y - 1],
+				[x + 1, y],
+				[x, y + 1],
+				[x - 1, y]
+			];
+			for(let i = 0; i < 4; i++){
+				if(this.domino_refresh_links[sides[i]] !== undefined){
+					this.domino_refresh_links[sides[i]].push([x, y]);
+				}
+				else{
+					this.domino_refresh_links[sides[i]] = [[x, y]];
+				}
+			}
 		}
 	};
 
