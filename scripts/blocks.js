@@ -505,3 +505,90 @@ class LogicalAnd extends Block {
 		area.refresh_cell(this.x, this.y - 1);
 	}
 }
+
+class LogicalNot extends Block {
+	constructor(x, y) {
+		super(x,
+			y,
+			'logical_not',
+			'70%',
+			'./images/logical_not.png',
+			'./images/logical_not_white.png',
+			'hsl(45, 100%, 40%)');
+		this.direction = 1;
+		this.is_active = true;
+		this.refresh_state();
+	}
+
+	get styles() {
+		let styles = super.styles;
+
+		if (this.direction == 2) {
+			styles += 'transform: rotate(90deg);';
+		}
+		else if (this.direction == 3) {
+			styles += 'transform: rotate(180deg);';
+		}
+		else if (this.direction == 4) {
+			styles += 'transform: rotate(270deg);';
+		}
+
+		return styles;
+	}
+
+	refresh_state() {
+		this.is_active = (this.number_of_redstone_sources > 0 ? false : true);
+
+		this.draw();
+
+		let sides = [
+			[this.x, this.y - 1],
+			[this.x + 1, this.y],
+			[this.x, this.y + 1],
+			[this.x - 1, this.y]
+		];
+
+		if (this.is_active) {
+			for (let i = 0; i < 4; i++) {
+				if (i + 1 == this.direction) {
+					area.get_cell(sides[i][0], sides[i][1]).add_redstone_source(this.x, this.y);
+				}
+				else {
+					area.get_cell(sides[i][0], sides[i][1]).remove_redstone_source(this.x, this.y);
+				}
+			}
+		}
+		else {
+			for (let i = 0; i < 4; i++) {
+				area.get_cell(sides[i][0], sides[i][1]).remove_redstone_source(this.x, this.y);
+			}
+		}
+
+		if (this.direction == 1) {
+			area.refresh_cell(this.x, this.y - 1);
+		}
+		else if (this.direction == 2) {
+			area.refresh_cell(this.x + 1, this.y);
+		}
+		else if (this.direction == 3) {
+			area.refresh_cell(this.x, this.y + 1);
+		}
+		else if (this.direction == 4) {
+			area.refresh_cell(this.x - 1, this.y);
+		}
+	}
+
+	click() {
+		this.direction++;
+
+		if (this.direction > 4) {
+			this.direction = 1;
+		}
+
+		this.refresh_state();
+		area.refresh_cell(this.x + 1, this.y);
+		area.refresh_cell(this.x, this.y + 1);
+		area.refresh_cell(this.x - 1, this.y);
+		area.refresh_cell(this.x, this.y - 1);
+	}
+}

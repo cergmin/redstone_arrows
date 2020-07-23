@@ -50,11 +50,39 @@ class Area {
 		else if (type == 'logical_and') {
 			this.area[[x, y]] = new LogicalAnd(x, y);
 		}
+		else if (type == 'logical_not') {
+			this.area[[x, y]] = new LogicalNot(x, y);
+		}
+		else if(type == 'empty'){
+			let sides = [
+				[x, y - 1],
+				[x + 1, y],
+				[x, y + 1],
+				[x - 1, y],
+				[x, y - 2],
+				[x + 2, y],
+				[x, y + 2],
+				[x - 2, y]
+			];
+
+			console.log(x + ';' + y);
+
+			for(let i = 0; i < sides.length; i++){
+				this.get_cell(sides[i][0], sides[i][1]).remove_redstone_source(x, y);
+				this.refresh_cell(sides[i][0], sides[i][1]);
+			}
+
+			$(this.selector + ' tr:nth-child(' + (y - 1) + ') td:nth-child(' + (x - 1) + ')').attr("type", '');
+			$(this.selector + ' tr:nth-child(' + (y - 1) + ') td:nth-child(' + (x - 1) + ')').attr("is-active", '');
+			$(this.selector + ' tr:nth-child(' + (y - 1) + ') td:nth-child(' + (x - 1) + ')').attr("style", '');
+
+			this.area[[x, y]] = undefined;
+		}
 		else if (type == 'info') {
 			console.log(this.area[[x, y]]);
 		}
 
-		if(this.area[[x, y]].domino_refresh){
+		if(this.area[[x, y]] !== undefined && this.area[[x, y]].domino_refresh){
 			let sides = [
 				[x, y - 1],
 				[x + 1, y],
@@ -117,7 +145,12 @@ $(area.selector).on('mousedown', 'tr td', function (e) {
 	mouse_buttons[e.button] = true;
 
 	if (mouse_buttons[0]) {
-		area.set_cell(this.cellIndex + 2, this.parentNode.rowIndex + 2, block_to_add);
+		if(e.shiftKey){
+			area.set_cell(this.cellIndex + 2, this.parentNode.rowIndex + 2, 'empty');
+		}
+		else{
+			area.set_cell(this.cellIndex + 2, this.parentNode.rowIndex + 2, block_to_add);
+		}
 	}
 });
 

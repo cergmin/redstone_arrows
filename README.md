@@ -11,4 +11,5 @@ https://cergmin.github.io/redstone_arrows
 | <img src="https://i.imgur.com/AX4oIO0.png" width="50"> | Simple arrow |  |
 | <img src="https://i.imgur.com/vSeBBIt.png" width="50"> | Pull arrow |  |
 | <img src="https://i.imgur.com/b8DiA9V.png" width="50"> | Double arrow |  |
-| <img src="https://i.imgur.com/CQI3XeQ.png" width="50"> | Logical and |  |
+| <img src="https://i.imgur.com/CQI3XeQ.png" width="50"> | Logical AND |  |
+| <img src="https://i.imgur.com/4VyZ5il.png" width="50"> | Logical NOT |  |
