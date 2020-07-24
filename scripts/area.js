@@ -9,8 +9,8 @@ class Area {
 		var self = this;
 
 		this.refresh_interval = setInterval(
-			function() {
-				// console.log(self.refresh_list.length + '( ' + self.refresh_list.filter(onlyUnique2D).length + ' )');
+			function () {
+				// console.log(self.refresh_list.length);
 				// if(self.refresh_list.length > 2000){
 				// 	self.refresh_list = [];
 				// }
@@ -21,14 +21,14 @@ class Area {
 				self.refresh_list = self.new_refresh_list.filter(onlyUnique2D);
 				self.new_refresh_list = [];
 			},
-			25);
+			1000 / 30);
 	}
 
 	refresh_cell(x, y) {
 		this.new_refresh_list.push([x, y]);
 
-		if(this.domino_refresh_links[[x, y]] !== undefined){
-			for(let i = 0; i < this.domino_refresh_links[[x, y]].length; i++){
+		if (this.domino_refresh_links[[x, y]] !== undefined) {
+			for (let i = 0; i < this.domino_refresh_links[[x, y]].length; i++) {
 				this.new_refresh_list.push(this.domino_refresh_links[[x, y]][i]);
 			}
 		}
@@ -53,7 +53,7 @@ class Area {
 		else if (type == 'logical_not') {
 			this.area[[x, y]] = new LogicalNot(x, y);
 		}
-		else if(type == 'empty'){
+		else if (type == 'empty') {
 			let sides = [
 				[x, y - 1],
 				[x + 1, y],
@@ -65,9 +65,7 @@ class Area {
 				[x - 2, y]
 			];
 
-			console.log(x + ';' + y);
-
-			for(let i = 0; i < sides.length; i++){
+			for (let i = 0; i < sides.length; i++) {
 				this.get_cell(sides[i][0], sides[i][1]).remove_redstone_source(x, y);
 				this.refresh_cell(sides[i][0], sides[i][1]);
 			}
@@ -82,18 +80,18 @@ class Area {
 			console.log(this.area[[x, y]]);
 		}
 
-		if(this.area[[x, y]] !== undefined && this.area[[x, y]].domino_refresh){
+		if (this.area[[x, y]] !== undefined && this.area[[x, y]].domino_refresh) {
 			let sides = [
 				[x, y - 1],
 				[x + 1, y],
 				[x, y + 1],
 				[x - 1, y]
 			];
-			for(let i = 0; i < 4; i++){
-				if(this.domino_refresh_links[sides[i]] !== undefined){
+			for (let i = 0; i < 4; i++) {
+				if (this.domino_refresh_links[sides[i]] !== undefined) {
 					this.domino_refresh_links[sides[i]].push([x, y]);
 				}
-				else{
+				else {
 					this.domino_refresh_links[sides[i]] = [[x, y]];
 				}
 			}
@@ -121,6 +119,7 @@ class Area {
 let area = new Area('#area');
 let block_to_add = 'simple_arrow';
 
+let mouse_last_position;
 let mouse_buttons = {
 	0: false,
 	1: false,
@@ -143,12 +142,13 @@ $(area.selector).on('contextmenu', 'tr td', function (e) {
 
 $(area.selector).on('mousedown', 'tr td', function (e) {
 	mouse_buttons[e.button] = true;
+	mouse_last_position = [e.clientX, e.clientY];
 
 	if (mouse_buttons[0]) {
-		if(e.shiftKey){
+		if (e.shiftKey) {
 			area.set_cell(this.cellIndex + 2, this.parentNode.rowIndex + 2, 'empty');
 		}
-		else{
+		else {
 			area.set_cell(this.cellIndex + 2, this.parentNode.rowIndex + 2, block_to_add);
 		}
 	}
@@ -156,4 +156,48 @@ $(area.selector).on('mousedown', 'tr td', function (e) {
 
 $(area.selector).on('mouseup', 'tr td', function (e) {
 	mouse_buttons[e.button] = false;
+});
+
+$(area.selector).on("mousemove", "tr td", function (e) {
+	if (mouse_buttons[0]) {
+		if (e.shiftKey) {
+			area.set_cell(this.cellIndex + 2, this.parentNode.rowIndex + 2, 'empty');
+		}
+		else {
+			area.set_cell(this.cellIndex + 2, this.parentNode.rowIndex + 2, block_to_add);
+
+			let flag = false;
+			let blocks_with_directions = ['simple_arrow', 'double_arrow', 'pull_arrow', 'logical_and', 'logical_not'];
+			for (let i = 0; i < blocks_with_directions.length; i++) {
+				if (block_to_add == blocks_with_directions[i]) {
+					flag = true;
+					break;
+				}
+			}
+
+			if (flag) {
+				let vector = normalize(
+					e.clientX - mouse_last_position[0],
+					e.clientY - mouse_last_position[1]
+				);
+				let angle = Math.atan2(vector.y, vector.x) * 180 / Math.PI;
+				let direction = 1;
+
+				if (angle <= -45 && angle > -130) {
+					direction = 1;
+				} else if (angle > -180 && angle <= -130 || angle <= 180 && angle > 130) {
+					direction = 4;
+				} else if (angle > 45 && angle <= 130) {
+					direction = 3;
+				} else if (angle <= 45 && angle > -45) {
+					direction = 2;
+				}
+
+				area.get_cell(this.cellIndex + 2, this.parentNode.rowIndex + 2).direction = direction;
+				area.refresh_cell(this.cellIndex + 2, this.parentNode.rowIndex + 2);
+			}
+		}
+	}
+
+	mouse_last_position = [e.clientX, e.clientY];
 });
